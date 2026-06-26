@@ -1,0 +1,421 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Daily Calories Intake</title>
+    <style>
+        @font-face {
+            font-family: 'MyLocalFont';
+            src: url("{% static 'tracker/fonts/Montserrat-Regular.woff2' %}") format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'MyLocalFont';
+            src: url("{% static 'tracker/fonts/Montserrat-Bold.woff2' %}") format('woff2');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', 'Segoe UI', sans-serif;
+            background: linear-gradient(0deg, #f3cfc2 0%, #ffffff 100%);
+            color: #4a3e3e;
+            padding: 2rem;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #container {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            gap: 2rem;
+            width: 100%;
+            margin: 0 auto;
+            align-items: stretch;
+        }
+
+        #left-panel {
+            display: flex; 
+            flex-direction: column;
+            flex: 2;
+            min-height: 0;
+            overflow: hidden;
+            background: #fffaf7;
+            border-radius: 14px;
+            padding: 2rem;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+            border: 1px solid #f0ddd6;
+        }
+
+        #right-panel {
+            flex: 5;
+            background: #fffaf7;
+            border-radius: 14px;
+            padding: 2rem;
+            min-height: 0;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+            border: 1px solid #f0ddd6;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #b05a5a;
+            border-bottom: 2px solid #f3cfc2;
+            padding-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: #8b5e5e;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"] {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid #eacdc4;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: #fffefa;
+            color: #444;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #d9947b;
+            box-shadow: 0 0 0 3px rgba(217,148,123,0.15);
+        }
+
+        button {
+            background: #cf8a7a;
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            font-weight: 600;
+        }
+        button:hover {
+            background: #b97263;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        button:disabled {
+            background: #e7c8be;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #submit-btn {
+            width: 100%;
+            margin-bottom: 1.2rem;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #f3cfc2;
+        }
+
+        #totalOfDay {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            color: #7b5e5e;
+        }
+        #totalOfDay strong {
+            color: #b05a5a;
+            font-size: 3rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        #foodTableWrapper {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+            width: 100%;
+            padding: 0;
+        }
+        #foodTableScrollable {
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        th, td {
+            line-height: 1;
+            height: 3rem; 
+            padding: 0 0.8rem 0 0.8rem;
+            text-align: left;
+            vertical-align: middle;
+            white-space: nowrap;
+            overflow: hidden;
+            font-size: 1rem;
+        }
+        th {
+            background: #fbeae5;
+            font-weight: 600;
+            color: #8b5e5e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 10;
+        }
+        tr {
+            border-bottom: 1px solid #f0ddd6;
+        }
+        tr:hover {
+            background: #fff4ec;
+        }
+        #foodTableWrapper > table:first-child th:nth-child(1) { width: 40%; }
+        #foodTableWrapper > table:first-child th:nth-child(2) { width: 40%; }
+        #foodTableWrapper > table:first-child th:nth-child(3) { width: 20%; }
+
+        /* Body table columns – make sure they match */
+        #foodTableScrollable table td:nth-child(1) { width: 40%; }
+        #foodTableScrollable table td:nth-child(2) { width: 40%; }
+        #foodTableScrollable table td:nth-child(3) { width: 20%; }
+
+        .delBtn {
+            padding: 0 0.8rem 0 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: None;
+            color: #d98181;
+            border: none;
+            aspect-ratio: 1/1;
+            font-size: 1.6rem;
+            
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .delBtn:hover {
+            background: None; 
+            color: #b97263;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <!-- ========= LEFT PANEL ========= -->
+    <div id="left-panel">
+        <h1>Daily Calories Intake</h1>
+
+        <form method="post" novalidate id="foodInput">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.name.id_for_label }}">{{ form.name.label }} {% if form.name.field.required %}*{% endif %}</label>
+                {{ form.name }}
+                {{ form.name.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.quantity.id_for_label }}">{{ form.quantity.label }} {% if form.quantity.field.required %}*{% endif %}</label>
+                {{ form.quantity }}
+                {{ form.quantity.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.unit_calories.id_for_label }}">{{ form.unit_calories.label }} {% if form.unit_calories.field.required %}*{% endif %}</label>
+                {{ form.unit_calories }}
+                {{ form.unit_calories.errors }}
+            </div>
+
+            {{ form.calories }}
+
+            <button type="submit" id="submit-btn">Add Item</button>
+        </form>
+
+        <hr>
+    
+        <div id="totalOfDay">
+            Today's total: <br>
+            <strong id="totalPreview">0</strong></strong><strong> KCAL</strong>
+        </div>
+
+
+        <div id="foodTableWrapper">
+            <table>
+                <thead id="foodTable-head">
+                    <tr>
+                        <th>Food</th>
+                        <th>Calories</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="foodTableScrollable">
+                <table>            
+                    <tbody id="foodTable-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========= RIGHT PANEL ========= -->
+    <div id="right-panel">
+        interactive content
+    </div>
+</div>
+
+<script>    
+    // --- Live preview for the form (unit × quantity) ---
+    const qtyInput = document.getElementById('{{ form.quantity.id_for_label }}');
+    const unitInput = document.getElementById('{{ form.unit_calories.id_for_label }}');
+
+    function calculateEntryTotal() {
+        const qty = parseInt(qtyInput.value) || 0;
+        const unit = parseInt(unitInput.value) || 0;
+
+        const hiddenCal = document.getElementById('{{ form.calories.id_for_label }}');
+        if (hiddenCal) hiddenCal.value = qty * unit;
+    }
+    document.addEventListener('DOMContentLoaded', calculateEntryTotal);
+    qtyInput.addEventListener('change', calculateEntryTotal);
+    unitInput.addEventListener('change', calculateEntryTotal);
+
+    // --- Fetch and display today's entries ---
+    async function loadEntries() {
+        try {
+            const response = await fetch('/api/food-list/get_today/');
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            const tbody = document.getElementById('foodTable-body');
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3">No records</td></tr>';
+                document.getElementById('totalPreview').textContent = '0';
+                return;
+            }
+
+            let totalCal = 0;
+            
+            data.forEach(entry => {
+                const row = document.createElement('tr');
+                const name = document.createElement('td');
+                const calories = document.createElement('td');
+                const delBtn = document.createElement('button');
+                name.textContent = entry.name;
+                calories.textContent = entry.calories;
+                delBtn.setAttribute('class', 'delBtn');
+                delBtn.textContent = '×';
+                delBtn.addEventListener('click', async ()=>{
+                    try {
+                        const response = await fetch('/api/food-list/delete/', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ ref_token: entry.ref_token })
+                        })
+                        if (!response.ok) throw new Error('Delete failed');
+                        loadEntries();
+                    } catch (err) {
+                        alert('Failed to delete: ' + err.message);
+                        loadEntries()
+                    }
+                })
+                row.append(name, calories, delBtn);
+                tbody.appendChild(row);
+                totalCal += parseInt(entry.calories) || 0;
+            });
+
+            if (tbody.children.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3">No records for today</td></tr>';
+            }
+            document.getElementById('totalPreview').textContent = totalCal;
+        } catch (err) {
+            console.error('Failed to load food entries:', err);
+            document.getElementById('foodTable-body').innerHTML = '<tr><td colspan="3">Failed to load</td></tr>';
+        }
+    }
+
+    // --- Compress past entries ---
+    async function compressPastEntries() {
+        const identifier = '[PAST RECORD]'
+        try {
+            const response = await fetch('/api/food-list/get_full/');
+            if (!response.ok) throw new Error(`HTTP${response.status}`);
+            const data = await response.json();
+            if (data.length === 0) return;
+
+            const TODAY = new Date().toLocaleDateString('en-CA'); 
+            const pastDays = {}; 
+            data.forEach(entry => {
+                if (entry.date !== TODAY && !entry.name.startsWith(identifier)) {
+                    if (!pastDays[entry.date]) pastDays[entry.date] = { tokens: [], totalCal: 0, names: [] };
+
+                    pastDays[entry.date].tokens.push(entry.ref_token);   // ← ref_token
+                    pastDays[entry.date].totalCal += parseInt(entry.calories) || 0;
+                    pastDays[entry.date].names.push(entry.name);
+                }
+            });
+
+            for (const date in pastDays) {
+                const thatDay = pastDays[date];
+                for (const token of thatDay.tokens) {
+                    await fetch('/api/food-list/delete/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ref_token: token })    // ← ref_token
+                    });
+                }
+            }
+
+            for (const date in pastDays) {
+                await fetch('/api/food-list/create/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: `${identifier} ${date}`,
+                        calories: pastDays[date].totalCal,
+                        date: date
+                    })
+                });
+            }
+            loadEntries();
+        } 
+        catch(err) {
+            console.error('Failed to compress entries before today:', err);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadEntries);
+    document.addEventListener('DOMContentLoaded', compressPastEntries);
+</script>
