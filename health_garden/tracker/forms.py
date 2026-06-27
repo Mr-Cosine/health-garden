@@ -43,7 +43,7 @@ class water_form(forms.Form):
         min_value = 0,
         max_value = 1e4,
         label = 'Volume of water (mL)',
-        widget = forms.TextInput(attrs={
+        widget = forms.NumberInput(attrs={
             'class': 'form-control',
             'placeholder': 'Amount',
         })

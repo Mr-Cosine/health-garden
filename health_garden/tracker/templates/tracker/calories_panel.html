@@ -139,18 +139,15 @@
             border-top: 2px solid #f3cfc2;
         }
 
-        #totalOfDay {
+        .stats {
             font-size: 1rem;
             font-weight: bold;
-            margin-top: 1rem;
-            margin-bottom: 1rem;
             color: #7b5e5e;
         }
-        #totalOfDay strong {
+        .stats strong {
             color: #b05a5a;
             font-size: 3rem;
             font-weight: bold;
-            text-transform: uppercase;
         }
 
         #foodTableWrapper {
@@ -265,9 +262,9 @@
 
         <hr>
     
-        <div id="totalOfDay">
+        <div class="stats" style="margin-top: 1rem; margin-bottom: 1rem">
             Today's total: <br>
-            <strong id="totalPreview">0</strong></strong><strong> KCAL</strong>
+            <strong id="totalCalories">0</strong><strong style="text-transform: uppercase"> KCAL</strong>
         </div>
 
 
@@ -322,7 +319,7 @@
 
             if (data.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="3">No records</td></tr>';
-                document.getElementById('totalPreview').textContent = '0';
+                document.getElementById('totalCalories').textContent = '0';
                 return;
             }
 

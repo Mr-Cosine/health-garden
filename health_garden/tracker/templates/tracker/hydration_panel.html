@@ -141,18 +141,15 @@
             margin-bottom: 1.2rem;
         }
 
-        #totalOfDay {
+        .stats {
             font-size: 1rem;
             font-weight: bold;
-            margin-top: 1rem;
-            margin-bottom: 1rem;
             color: #3e6b6b;
         }
-        #totalOfDay strong {
+        .stats strong {
             color: #2f6b6b;
             font-size: 3rem;
             font-weight: bold;
-            text-transform: uppercase;
         }
 
         #waterTableWrapper {
@@ -253,11 +250,15 @@
 
         <hr>
     
-        <div id="totalOfDay">
-            Today's total: <br>
-            <strong id="totalPreview">0</strong></strong><strong> mL</strong>
+        <div class="stats" style="margin-top: 1rem; margin-bottom: 0;">
+            Today's total:<br>
+            <strong id="totalHydration">0</strong><strong style="text-transform: uppercase"> ML</strong> / 2000 ML
         </div>
-
+        <div class="stats" style="margin-top: 0.5rem; margin-bottom: 1rem;">
+            Time since your last hydration:<br>
+            <strong id="lastHydrationTime">--:--:--</strong>
+            <div id="noticeMessage">Stay hydrated!</div>
+        </div>
 
         <div id="waterTableWrapper">
             <table>
@@ -284,6 +285,9 @@
 </div>
 
 <script>    
+    // --- Timing last hydration ---
+    let hydrationTimer = null;
+
     // --- Fetch and display today's entries ---
     async function loadEntries() {
         try {
@@ -295,11 +299,14 @@
 
             if (data.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="3">No records</td></tr>';
-                document.getElementById('totalPreview').textContent = '0';
+                document.getElementById('totalHydration').textContent = '0';
+                startHydrationTimer(null);
                 return;
             }
 
             let totalmL = 0;
+
+            let latestTimeStr = '00:00:00';
             
             data.forEach(entry => {
                 const row = document.createElement('tr');
@@ -327,16 +334,57 @@
                 row.append(time, amount, delBtn);
                 tbody.appendChild(row);
                 totalmL += parseInt(entry.amount) || 0;
+
+                if (entry.time > latestTimeStr) latestTimeStr = entry.time;
             });
 
             if (tbody.children.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="3">No records for today</td></tr>';
             }
-            document.getElementById('totalPreview').textContent = totalmL;
+
+            document.getElementById('totalHydration').textContent = totalmL;
+            startHydrationTimer(latestTimeStr);
         } catch (err) {
             console.error('Failed to load water entries:', err);
             document.getElementById('waterTable-body').innerHTML = '<tr><td colspan="3">Failed to load</td></tr>';
         }
+    }
+
+    function startHydrationTimer(latestTimeStr) {
+        // Clear any previous interval
+        if (hydrationTimer) {
+            clearInterval(hydrationTimer);
+            hydrationTimer = null;
+        }
+
+        const now = new Date();
+        let lastHydrationDate = null;
+
+        if (latestTimeStr) {
+            // Parse the HH:MM:SS time as if it happened today
+            const [h, m, s] = latestTimeStr.split(':').map(Number);
+            lastHydrationDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, s);
+        } else {
+            // No entries today – start from the beginning of the day (midnight)
+            lastHydrationDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+        }
+
+        // Update immediately and then every second
+        function updateDisplay() {
+            const elapsed = Math.floor((new Date() - lastHydrationDate) / 1000); // seconds
+            const hours = Math.floor(elapsed / 3600);
+            const minutes = Math.floor((elapsed % 3600) / 60);
+            const display = `${String(hours)}h : ${String(minutes)}min`;
+            document.getElementById('lastHydrationTime').textContent = display;
+
+            const noticeEl = document.getElementById('noticeMessage');
+            if (elapsed > 3600*4) noticeEl.textContent = 'You are not a cactus, go get some water!'
+            else if (elapsed > 3600) noticeEl.textContent = 'Take a break, its time to drink some water.';
+            else noticeEl.textContent = 'Doing great! Stay hydrated.';
+        }
+
+        updateDisplay();
+        hydrationTimer = setInterval(updateDisplay, 1000);
     }
 
     // --- Compress past entries ---
@@ -377,7 +425,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        name: `${identifier} ${pastDays[date]}`,
+                        name: `${identifier} ${date}`,
                         amount: pastDays[date].totalAmount,
                         time: pastDays[date].lastHydrationTime,
                         date: date
