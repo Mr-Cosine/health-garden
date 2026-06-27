@@ -70,6 +70,19 @@
             box-shadow: 0 6px 18px rgba(0,0,0,0.2);
             border: 1px solid #f0ddd6;
         }
+
+        .returnBtn {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            color: #8b5e5e;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: bold;
+            dominant-baseline: middle;
+            text-transform: uppercase;
+        }
+
         h1 {
             font-size: 2rem;
             font-weight: bold;
@@ -241,6 +254,17 @@
 <div id="container">
     <!-- ========= LEFT PANEL ========= -->
     <div id="left-panel">
+        <a href="{% url 'dashboard' %}" class="returnBtn">
+            <svg viewBox="0 0 24 24" width="1.75rem" height="2.5rem" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier"></g>
+                <g id="SVGRepo_iconCarrier"> 
+                    <path d="M15 7L10 12L15 17" stroke="#8b5e5e" stroke-width="3"></path> 
+                </g>
+            </svg> 
+            Home
+        </a>
+
         <h1>Daily Calories Intake</h1>
 
         <form method="post" novalidate id="foodInput">

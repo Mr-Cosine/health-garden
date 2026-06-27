@@ -51,12 +51,14 @@
         }
         .home-card { 
             flex: 1;
+            text-decoration: none;
             background: #fffaf7; 
             border-radius: 14px; 
             padding: 2rem; 
             box-shadow: 0 6px 18px rgba(0,0,0,0.2); 
         }
         .home-card:hover {
+            background: #f8efe9; 
             transform: translateY(-2px);
             box-shadow: 0 12px 24px rgba(0,0,0,0.24);
         }
@@ -79,15 +81,15 @@
     <div class="container">
         <div class="left-content">
             <!-- Calories card -->
-            <a href="/calories/" class="home-card">
+            <a href="{% url 'calories_panel' %}" class="home-card">
                 <h2>🔥 Calories</h2>
             </a>
             <!-- Hydration card -->
-            <a href="/hydration/" class="home-card">
+            <a href="{% url 'hydration_panel' %}" class="home-card">
                 <h2>💧 Hydration</h2>
             </a>
             <!-- Medication card -->
-            <a href="/medication/" class="home-card">
+            <a href="{% url 'medication_panel' %}" class="home-card">
                 <h2>💊 Medication</h2>
             </a>
         </div>
