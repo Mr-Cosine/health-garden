@@ -1,0 +1,104 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Health Garden</title>
+    <style>
+        @font-face {
+            font-family: 'Montserrat';
+            src: url("{% static 'tracker/fonts/Montserrat-Regular.woff2' %}") format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'Montserrat';
+            src: url("{% static 'tracker/fonts/Montserrat-Bold.woff2' %}") format('woff2');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        /* … keep your existing font & reset styles … */
+        body { 
+            font-family: 'Montserrat', 'Segoe UI', sans-serif;
+            background: linear-gradient(0deg, #f3cfc2 0%, #ffffff 100%); 
+            height: 100vh;
+            display: flex;
+        }
+        .container { 
+            display: flex; 
+            flex: 1;
+            gap: 2rem; 
+            padding: 2rem; 
+            margin: 0 auto; 
+        }
+        .left-content {
+            display: flex;
+            flex: 1;
+            gap: 2rem;
+            flex-direction: column;
+        }
+        .right-content {
+            display: flex;
+            flex: 2;
+            background: #fffaf7;
+            border-radius: 14px;
+            padding: 2rem;
+            min-height: 0;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+        }
+        .home-card { 
+            flex: 1;
+            background: #fffaf7; 
+            border-radius: 14px; 
+            padding: 2rem; 
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1); 
+        }
+        .home-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+        }
+        .home-card h2 {
+            color: #b05a5a;    /* your accent colour */
+            margin-bottom: 0.5rem;
+        }
+
+        .interactive { 
+            flex: 1;
+            border-radius: 14px; 
+            margin: none; 
+            padding: none;
+            border: 1px solid #444;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-content">
+            <!-- Calories card -->
+            <a href="/calories/" class="home-card">
+                <h2>🔥 Calories</h2>
+            </a>
+            <!-- Hydration card -->
+            <a href="/hydration/" class="home-card">
+                <h2>💧 Hydration</h2>
+            </a>
+            <!-- Medication card -->
+            <a href="/medication/" class="home-card">
+                <h2>💊 Medication</h2>
+            </a>
+        </div>
+
+        <div class="right-content">
+            <!-- Summary / progress card -->
+            <div class="interactive">
+                <h>Interactive</h2>
+                <!-- You can fill this with live stats via JS -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -13,7 +13,7 @@ import json
 # Home
 
 def dashboard(request):
-    return render(request, 'tracker/home.html')
+    return render(request, 'tracker/dashboard.html')
 
 #----------------------------------------------------------------------------------------------------------------
 # Daily calories intake panel

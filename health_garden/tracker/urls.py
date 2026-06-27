@@ -18,7 +18,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.dashboard, name = 'dashboard'),
+    path('dashboard/', views.dashboard, name = 'dashboard'),
 
     path('calories/', views.calories_panel, name = 'calories_panel'),
     path('api/food-list/create/', views.food_add, name='food_create'),

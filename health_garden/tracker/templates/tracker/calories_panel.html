@@ -7,13 +7,13 @@
     <title>Daily Calories Intake</title>
     <style>
         @font-face {
-            font-family: 'MyLocalFont';
+            font-family: 'Montserrat';
             src: url("{% static 'tracker/fonts/Montserrat-Regular.woff2' %}") format('woff2');
             font-weight: normal;
             font-style: normal;
         }
         @font-face {
-            font-family: 'MyLocalFont';
+            font-family: 'Montserrat';
             src: url("{% static 'tracker/fonts/Montserrat-Bold.woff2' %}") format('woff2');
             font-weight: bold;
             font-style: normal;
@@ -60,6 +60,7 @@
         }
 
         #right-panel {
+            display: flex;
             flex: 5;
             background: #fffaf7;
             border-radius: 14px;
@@ -220,6 +221,14 @@
             color: #b97263;
         }
 
+        .interactive { 
+            flex: 1;
+            border-radius: 14px; 
+            margin: none; 
+            padding: none;
+            border: 1px solid #444;
+        }
+
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
@@ -288,7 +297,7 @@
 
     <!-- ========= RIGHT PANEL ========= -->
     <div id="right-panel">
-        interactive content
+        <div class="interactive">interactive content</div>
     </div>
 </div>
 
@@ -356,7 +365,7 @@
             if (tbody.children.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="3">No records for today</td></tr>';
             }
-            document.getElementById('totalPreview').textContent = totalCal;
+            document.getElementById('totalCalories').textContent = totalCal;
         } catch (err) {
             console.error('Failed to load food entries:', err);
             document.getElementById('foodTable-body').innerHTML = '<tr><td colspan="3">Failed to load</td></tr>';

@@ -1,2 +1,2 @@
-/health_garden/*.sqlite3
+/health_garden/db.sqlite3
 /.venv
